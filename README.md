@@ -10,3 +10,7 @@ Wipe MBR to 2MB (Not tested yet)
 GDI payloads:
 
 10 payloads, but not all are called.
+
+Notes:
+
+This repository haven't have the compiled executable. Don't forget to compile the application!

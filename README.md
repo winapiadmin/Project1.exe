@@ -15,7 +15,7 @@ Notes:
 
 This repository haven't have the compiled executable. Don't forget to compile the application!
 
-MBR text:
+MBR text(not available):
 
 Your computer had been trashed by Project1.
 Please, it's not recoverable by software.

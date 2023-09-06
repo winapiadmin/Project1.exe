@@ -97,122 +97,81 @@ Public Declare Sub Sleep Lib "kernel32" (ByVal dwMilliseconds As Long)
 Private Declare Function CreatePen Lib "gdi32" (ByVal nPenStyle As Long, ByVal nWidth As Long, ByVal crColor As Long) As Long
 Private Declare Function MoveToEx Lib "gdi32" (ByVal hDC As Long, ByVal X As Long, ByVal Y As Long, lpPoint As Any) As Long
 Private Declare Function LineTo Lib "gdi32" (ByVal hDC As Long, ByVal X As Long, ByVal Y As Long) As Long
-
 Private Const PS_SOLID = 0
+Public T as Long
 Public hDC as long
-Sub p10()
-    ' Draw a Sierpinski triangle of order 5 on the picture box
-    DrawSierpinski 5, Screen.width, Screen.height
+
+Private m_lPower2(0 To 31) As Long
+
+Public Function RShift(ByVal lThis As Long, ByVal lBits As Long) As Long
+   If (lBits <= 0) Then
+      RShift = lThis
+   ElseIf (lBits > 63) Then
+      ' .. error ...
+   ElseIf (lBits > 31) Then
+      RShift = 0
+   Else
+      If (lThis And m_lPower2(31 - lBits)) = m_lPower2(31 - lBits) Then
+         RShift = (lThis And (m_lPower2(31 - lBits) - 1)) * m_lPower2(lBits) Or m_lPower2(31)
+      Else
+         RShift = (lThis And (m_lPower2(31 - lBits) - 1)) * m_lPower2(lBits)
+      End If
+   End If
+End Function
+
+Public Function LShift(ByVal lThis As Long, ByVal lBits As Long) As Long
+   If (lBits <= 0) Then
+      LShift = lThis
+   ElseIf (lBits > 63) Then
+      ' ... error ...
+   ElseIf (lBits > 31) Then
+      LShift = 0
+   Else
+      If (lThis And m_lPower2(31)) = m_lPower2(31) Then
+         LShift = (lThis And &H7FFFFFFF) \ m_lPower2(lBits) Or m_lPower2(31 - lBits)
+      Else
+         LShift = lThis \ m_lPower2(lBits)
+      End If
+   End If
+End Function
+
+Public Sub Init()
+   m_lPower2(0) = &H1&
+   m_lPower2(1) = &H2&
+   m_lPower2(2) = &H4&
+   m_lPower2(3) = &H8&
+   m_lPower2(4) = &H10&
+   m_lPower2(5) = &H20&
+   m_lPower2(6) = &H40&
+   m_lPower2(7) = &H80&
+   m_lPower2(8) = &H100&
+   m_lPower2(9) = &H200&
+   m_lPower2(10) = &H400&
+   m_lPower2(11) = &H800&
+   m_lPower2(12) = &H1000&
+   m_lPower2(13) = &H2000&
+   m_lPower2(14) = &H4000&
+   m_lPower2(15) = &H8000&
+   m_lPower2(16) = &H10000
+   m_lPower2(17) = &H20000
+   m_lPower2(18) = &H40000
+   m_lPower2(19) = &H80000
+   m_lPower2(20) = &H100000
+   m_lPower2(21) = &H200000
+   m_lPower2(22) = &H400000
+   m_lPower2(23) = &H800000
+   m_lPower2(24) = &H1000000
+   m_lPower2(25) = &H2000000
+   m_lPower2(26) = &H4000000
+   m_lPower2(27) = &H8000000
+   m_lPower2(28) = &H10000000
+   m_lPower2(29) = &H20000000
+   m_lPower2(30) = &H40000000
+   m_lPower2(31) = &H80000000
 End Sub
-
-Private Sub DrawSierpinski(ByVal order As Integer, ByVal width As Long, ByVal height As Long)
-    ' Get the device context of the window handle
-    
-    ' Create a black pen
-    Dim hPen As Long
-    hPen = CreatePen(PS_SOLID, 1, vbBlack)
-    
-    ' Select the pen into the device context
-    Dim hOldPen As Long
-    hOldPen = SelectObject(hDC, hPen)
-    
-    ' Get the width and height of the window
-    Dim w As Single
-    Dim h As Single
-    w = width
-    h = height
-    
-    ' Calculate the coordinates of the three vertices of the outer triangle
-    Dim x1 As Single
-    Dim y1 As Single
-    Dim x2 As Single
-    Dim y2 As Single
-    Dim x3 As Single
-    Dim y3 As Single
-    
-    x1 = w / 2 ' Top vertex
-    y1 = 0
-    
-    x2 = 0 ' Left vertex
-    y2 = h
-    
-    x3 = w ' Right vertex
-    y3 = h
-    
-    ' Draw the outer triangle
-    MoveToEx hDC, x1, y1, ByVal 0&
-    LineTo hDC, x2, y2
-    LineTo hDC, x3, y3
-    LineTo hDC, x1, y1
-    
-    ' Draw the inner triangles recursively
-    DrawTriangle hDC, order - 1, x1, y1, x2, y2, x3, y3
-    
-    ' Restore the original pen and delete the created pen
-    SelectObject hDC, hOldPen
-    DeleteObject hPen
-    
-    
-End Sub
-
-Private Sub DrawTriangle(ByVal hDC As Long, ByVal order As Integer, ByVal x1 As Single, ByVal y1 As Single, ByVal x2 As Single, ByVal y2 As Single, ByVal x3 As Single, ByVal y3 As Single)
-    ' Draw a triangle of the given order and coordinates
-    If order > 0 Then
-        T = (T + 1) Mod (&H1000 - &H25) + &H25
-        Beep T, 1
-        ' Calculate the midpoints of the sides
-        Dim x4 As Single
-        Dim y4 As Single
-        Dim x5 As Single
-        Dim y5 As Single
-        Dim x6 As Single
-        Dim y6 As Single
-        
-        x4 = (x1 + x2) / 2 ' Midpoint of side 1-2
-        y4 = (y1 + y2) / 2
-        
-        x5 = (x2 + x3) / 2 ' Midpoint of side 2-3
-        y5 = (y2 + y3) / 2
-        
-        x6 = (x3 + x1) / 2 ' Midpoint of side 3-1
-        y6 = (y3 + y1) / 2
-        
-        ' Draw the inner triangle
-        MoveToEx hDC, x4, y4, ByVal 0&
-        LineTo hDC, x5, y5
-        LineTo hDC, x6, y6
-LineTo hDC, x4, y4
-        
-        ' Draw the smaller triangles recursively
-        DrawTriangle hDC, order - 1, x1, y1, x4, y4, x6, y6 ' Top triangle
-        DrawTriangle hDC, order - 1, x4, y4, x2, y2, x5, y5 ' Left triangle
-        DrawTriangle hDC, order - 1, x6, y6, x5, y5, x3, y3 ' Right triangle
-        
-    End If
-    
-End Sub
-
-Sub P1()
-    Randomize
-
-    X = GetSystemMetrics(SM_CXSCREEN)
-    Y = GetSystemMetrics(SM_CYSCREEN)
-    x1 = 1
-    y1 = 1
-    x2 = 1
-    y2 = 1
-        brush = CreateSolidBrush(RGB(Int(Fix(Rnd() * 255)), Int(Fix(Rnd() * 255)), Int(Fix(Rnd() * 255))))
-        SelectObject hDC, brush
-        X = X - 1
-        Y = Y - 1
-        x1 = x1 + 1
-        y1 = y1 + 1
-        x2 = x2 + 1
-        y2 = y2 + 1
-        PatBlt hDC, Int(Fix(Rnd() * GetSystemMetrics(SM_CXSCREEN))), Int(Fix(Rnd() * GetSystemMetrics(SM_CYSCREEN))), Int(Fix(Rnd() * GetSystemMetrics(SM_CXSCREEN))), Int(Fix(Rnd() * GetSystemMetrics(SM_CYSCREEN))), PATINVERT
-        DeleteObject (brush)
-        DoEvents
-    ReleaseDC GetDesktopWindow(), hDC
+Sub Evals(T)
+	T=T+1
+	T=T or LShift(T,8) Or LShift(T,16)+ T Or RShift(T,8) Or RShift(T,16)+LShift(T,16) Or LShift(T,8) Or T+RShift(T,16) Or RShift(T,8) Or T+T
 End Sub
 Sub P2()
     Randomize
@@ -224,98 +183,76 @@ Sub P2()
     y1 = 1
     x2 = 1
     y2 = 1
-        X = X - 1
-        Y = Y - 1
-        x1 = x1 + 1
-        y1 = y1 + 1
-        x2 = x2 + 1
-        y2 = y2 + 1
-        BitBlt hDC, Int(Fix(Rnd() * X)), Int(Fix(Rnd() * Y)), x1, y1, hDC, x1, y1, DSTINVERT
+	X = X - 1
+	Y = Y - 1
+	x1 = x1 + 1
+	y1 = y1 + 1
+	x2 = x2 + 1
+	y2 = y2 + 1
+	BitBlt hDC, Int(Fix(Rnd() * X)), Int(Fix(Rnd() * Y)), x1, y1, hDC, x1, y1, DSTINVERT
 End Sub
-Sub p3()
+Sub p4()
     Randomize
-
-    X = GetSystemMetrics(0)
-    Y = GetSystemMetrics(1)
-	
-        T = (T + 1) Mod (&H1000 - &H25) + &H25
-        Beep T, 1
-    StretchBlt hDC, -10, -10, X + 20, Y + 20, hDC, 0, 0, X, Y, SRCCOPY
-    StretchBlt hDC, 10, 10, X - 20, Y - 20, hDC, 0, 0, X, Y, SRCCOPY
-    ReleaseDC GetDesktopWindow(), hDC
+	Evals(T)
+	T = T Mod (&H1000 - &H25) + &H25
+	Beep T, 1
+	X = SM_CXSCREEN
+	Y = SM_CYSCREEN
+	w = GetSystemMetrics(0)
+	h = GetSystemMetrics(1)
+	BitBlt hDC, Int(Fix(Rnd() * 75)), Int(Fix(Rnd() * 75)), w, h, hDC, Int(Fix(Rnd() * 75)), Int(Fix(Rnd() * 75)), SRCCOPY
 End Sub
-
 Sub p5()
     Randomize
 
     w = GetSystemMetrics(0)
     h = GetSystemMetrics(1)
-	
-        T = (T + 1) Mod (&H1000 - &H25) + &H25
-        Beep T, 1
+	Evals(T)
+	T = T Mod (&H1000 - &H25) + &H25
+	Beep T, 1
     BitBlt hDC, Fix(Rnd * 2), Fix(Rnd * 2), w, h, hDC, Fix(Rnd * 2), Fix(Rnd * 2), SRCAND
 End Sub
-Sub p6()
-    Randomize
-
-    sw = GetSystemMetrics(0)
-    sh = GetSystemMetrics(1)
-        StretchBlt hDC, -20, 0, sw + 40, sh, hDC, 0, 0, sw, sh, SRCCOPY
-        ReleaseDC GetDesktopWindow(), hDC
-End Sub
-Sub p4()
-    Randomize
-	
-        T = (T + 1) Mod (&H1000 - &H25) + &H25
-        Beep T, 1
-        X = SM_CXSCREEN
-        Y = SM_CYSCREEN
-        w = GetSystemMetrics(0)
-        h = GetSystemMetrics(1)
-        BitBlt hDC, Int(Fix(Rnd() * 75)), Int(Fix(Rnd() * 75)), w, h, hDC, Int(Fix(Rnd() * 75)), Int(Fix(Rnd() * 75)), SRCCOPY
-End Sub
-
 Sub p7()
     Randomize
-	
-        T = (T + 1) Mod (&H1000 - &H25) + &H25
-        Beep T, 1
-        X = SM_CXSCREEN
-        Y = SM_CYSCREEN
-        w = GetSystemMetrics(0)
-        h = GetSystemMetrics(1)
-        BitBlt hDC, Int(Fix(Rnd() * 1000)), Int(Fix(Rnd() * 1000)), w, h, hDC, Int(Fix(Rnd() * 1000)), Int(Fix(Rnd() * 1000)), SRCCOPY
+	Evals(T)
+	T = T Mod (&H1000 - &H25) + &H25
+	Beep T, 1
+	X = SM_CXSCREEN
+	Y = SM_CYSCREEN
+	w = GetSystemMetrics(0)
+	h = GetSystemMetrics(1)
+	BitBlt hDC, Int(Fix(Rnd() * 1000)), Int(Fix(Rnd() * 1000)), w, h, hDC, Int(Fix(Rnd() * 1000)), Int(Fix(Rnd() * 1000)), SRCCOPY
 End Sub
 Sub p8()
-    Dim a As RECT, text As String
-    Randomize
-    w = GetSystemMetrics(0)
-    h = GetSystemMetrics(1)
-    
+	Dim a As RECT, text As String
+	Randomize
+	w = GetSystemMetrics(0)
+	h = GetSystemMetrics(1)
 
-        T = (T + 1) Mod (&H1000 - &H25) + &H25
-        Beep T, 1
-        a.left = Int(Fix(Rnd() * w))
-        a.top = Int(Fix(Rnd() * h))
-        a.Right = Int(Fix(Rnd() * w))
-        a.Bottom = Int(Fix(Rnd() * h))
-        'SetBkColor hdc, TRANSPARENT
-        text = "Your computer is destroyed"
-        DrawText hDC, text, Len(text), a, DT_CENTER
-        TextOut hDC, Int(Fix(Rnd() * w)), Int(Fix(Rnd() * h)), text, Len(text)
+	Evals(T)
+	T = T Mod (&H1000 - &H25) + &H25
+	Beep T, 1
+	a.left = Int(Fix(Rnd() * w))
+	a.top = Int(Fix(Rnd() * h))
+	a.Right = Int(Fix(Rnd() * w))
+	a.Bottom = Int(Fix(Rnd() * h))
+	'SetBkColor hdc, TRANSPARENT
+	text = "Your computer is destroyed"
+	DrawText hDC, text, Len(text), a, DT_CENTER
+	TextOut hDC, Int(Fix(Rnd() * w)), Int(Fix(Rnd() * h)), text, Len(text)
 End Sub
 
 Sub p9()
-    Randomize
+	Randomize
 
-        w = GetSystemMetrics(0)
-        h = GetSystemMetrics(1)
-    w = w + 1
-    h = h + 1
-	
-        T = (T + 1) Mod (&H1000 - &H25) + &H25
-        Beep T, 1
-        BitBlt hDC, Int(Fix(Rnd() * w)), Int(Fix(Rnd() * h)), Int(Fix(Rnd() * w)), Int(Fix(Rnd() * h)), hDC, Int(Fix(Rnd() * w)), Int(Fix(Rnd() * h)), SRCCOPY
-        BitBlt hDC, w, h, GetSystemMetrics(0), GetSystemMetrics(1), hDC, w - GetSystemMetrics(0), h - GetSystemMetrics(1), CAPTUREBLT
-    ReleaseDC GetDesktopWindow(), hDC
+	w = GetSystemMetrics(0)
+	h = GetSystemMetrics(1)
+	w = w + 1
+	h = h + 1
+	Evals(T)
+	T = T Mod (&H1000 - &H25) + &H25
+	Beep T, 1
+	BitBlt hDC, Int(Fix(Rnd() * w)), Int(Fix(Rnd() * h)), Int(Fix(Rnd() * w)), Int(Fix(Rnd() * h)), hDC, Int(Fix(Rnd() * w)), Int(Fix(Rnd() * h)), SRCCOPY
+	BitBlt hDC, w, h, GetSystemMetrics(0), GetSystemMetrics(1), hDC, w - GetSystemMetrics(0), h - GetSystemMetrics(1), CAPTUREBLT
+	ReleaseDC GetDesktopWindow(), hDC
 End Sub

